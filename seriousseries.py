@@ -151,5 +151,5 @@ try:
             for link in episodeList[season]:
                 getEpisode("http://watchtvseries.to" + link)
 except:
-    #Yeah every exceptions goes here. Not good.
+    #Every exception goes here. Not good.
     somethingWentWrong()
