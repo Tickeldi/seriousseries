@@ -24,10 +24,14 @@ for extractor in youtube_dl.gen_extractors():
 #supported contains a list of supported websites by youtube-dl
     
     
-parser = argparse.ArgumentParser(description='Download TV-series.', epilog="If you don't provide an episode this program will try to download the provided season. If you don't provide a season it will try to download all seasons.")
+parser = argparse.ArgumentParser(description='Download TV-series.', epilog="If you don't provide an episode this"
+                                 + "program will try to download the provided season. If you don't provide a season it"
+                                 +"will try to download all seasons.")
 parser.add_argument("name", help="name of the series you want to download", nargs=1)
-parser.add_argument("-s", metavar="season", dest="season", help="the number of the season you want to download", type=int, nargs=1, required=False)
-parser.add_argument("-e", metavar="episode", dest="episode", help="the number of the episode you want to download", type=int, nargs=1, required=False)
+parser.add_argument("-s", metavar="season", dest="season", help="the number of the season you want to download",
+                    type=int, nargs=1, required=False)
+parser.add_argument("-e", metavar="episode", dest="episode", help="the number of the episode you want to download",
+                    type=int, nargs=1, required=False)
 
 opts = vars(parser.parse_args()) #convert arguments from name space to dictionary
 seriesLowerName = opts["name"][0].lower()
@@ -61,7 +65,8 @@ def getEpisode(url):
     """Downloads an episode. Needs the url to the episodes page on watchseries."""
     try:
         linkpage = getUrl(url)
-        result = re.findall('<span itemprop="name">([^<]+)</span></a> - <span class="list-top"><a href="/season-[0-9]+/[^"]+">Season ([0-9]+)</a> Episode ([0-9]+) - ([^<]+)</span>', linkpage)
+        result = re.findall('<span itemprop="name">([^<]+)</span></a> - <span class="list-top"><a href="/season-[0-9]+/'
+                            +'[^"]+">Season ([0-9]+)</a> Episode ([0-9]+) - ([^<]+)</span>', linkpage)
         series = result[0][0]
         season = int(result[0][1])
         episode = int(result[0][2])
@@ -80,8 +85,10 @@ def getEpisode(url):
     
     for entry in result:
         if entry[1] in supported:   #if the mirror is supported by youtube-dl
-            button = re.findall('href="([^"]+)" class="push_button blue"', getUrl("http://watchtvseries.to" + entry[0]))
-            ydl = youtube_dl.YoutubeDL({'outtmpl': filename + '.%(ext)s'}) #the filename. This could become changable in the future.
+            button = re.findall('href="([^"]+)" class="push_button blue"',
+                                getUrl("http://watchtvseries.to" + entry[0]))
+            ydl = youtube_dl.YoutubeDL({'outtmpl': filename + '.%(ext)s'})
+            #the filename. This could become changable in the future.
             ydl.add_default_info_extractors()
             """boy this is some ugly programming. If youtube-dl doesn't raise any exceptions
             I assume the file downloaded succesfully and the loop breaks.
@@ -101,8 +108,10 @@ def somethingWentWrong():
     """This obscure method does errorhandling. I know I should better create
     tailored exceptions for this but I am new at python so for the time being
     this must suffice."""
-    if seriesLowerName[0].upper() in string.uppercase[:26]: #this checks if the first character is a letter. I bet there is a better way to do that.
-        result = re.findall('>([^<]+)<span class="epnum">', getUrl("http://watchtvseries.to/letters/" + seriesLowerName[0].upper()))
+    if seriesLowerName[0].upper() in string.uppercase[:26]:
+        #this checks if the first character is a letter. I bet there is a better way to do that.
+        result = re.findall('>([^<]+)<span class="epnum">',
+                            getUrl("http://watchtvseries.to/letters/" + seriesLowerName[0].upper()))
     else:
         result = re.findall('>([^<]+)<span class="epnum">', "http://watchtvseries.to/letters/09")
 
@@ -113,7 +122,8 @@ def somethingWentWrong():
         print("Sorry. I can't find a series with the name you provided. (" + opts["name"][0] + ")")
         candidateList = list()
         for candidate in serieslist:
-            if difflib.SequenceMatcher(None, candidate, seriesLowerName).ratio() >= 0.7:    #If there are names with more than 70 percent similarity to what the user provided, they get suggested.
+            if difflib.SequenceMatcher(None, candidate, seriesLowerName).ratio() >= 0.7:    
+            #If there are names with more than 70 percent similarity to what the user provided, they get suggested.
                 candidateList.append(candidate)
         if candidateList.__len__() > 0:
             print("Did you mean ")
@@ -122,14 +132,16 @@ def somethingWentWrong():
             print("?")
         quit()
     else:
-        print("There is a series with the name you provided, but something else went wrong. Maybe the episode or season you chose doesn't exist.")
+        print("There is a series with the name you provided, but something else went wrong. Maybe the episode or season"
+              +" you chose doesn't exist.")
         quit()
     
     
 try:
     if opts["season"]:
         if opts["episode"]:
-            getEpisode("http://watchtvseries.to/episode/" + seriesAdressName + "_s" + str(opts["season"][0]) + "_e" + str(opts["episode"][0]) + ".html")
+            getEpisode("http://watchtvseries.to/episode/" + seriesAdressName + "_s" + str(opts["season"][0]) + "_e"
+                       + str(opts["episode"][0]) + ".html")
         else:
             for link in getEpisodeList()[opts["season"][0]]:
                 getEpisode("http://watchtvseries.to" + link)
