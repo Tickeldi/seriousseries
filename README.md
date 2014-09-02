@@ -7,8 +7,8 @@ It needs youtube-dl as a dependency.
 
 And a lot of work.
 
-
-
+Usage
+-----
 usage: seriousseries [-h] [-s season] [-e episode] name
 
 positional arguments:
@@ -22,10 +22,8 @@ optional arguments:
 If you don't provide an episode this program will try to download the provided
 season. If you don't provide a season it will try to download all seasons.
 
-
-
-
-To do List:
+To do
+-----
 - Add feature to automagically download the newest or latest n episodes of a series.
 - Proper use of exceptions and corresponding, sane error messages.
 - Add different verbosity levels
